@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="NHL Points">
+<meta name="theme-color" content="#0f5b44">
+<title>2026/27 NHL Points Tracker</title>
+<style>
+:root{color-scheme:dark;--bg:#161a18;--panel:#1f2522;--panel2:#272e2a;--btn:#323a36;--ln:#303733;--tx:#f2f4f3;--mut:#8d9a94;--g:#0f5b44;--g2:#16805f;--y:#f5d90a;--ok:#1b8a55;--bad:#9a2f2f;--r:#f5d90a;--b:#5ac8fa}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.3 -apple-system,system-ui,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;-webkit-text-size-adjust:100%}
+header{position:sticky;top:0;z-index:5;background:var(--g);padding:calc(10px + env(safe-area-inset-top,0px)) 12px 0;box-shadow:0 2px 10px rgba(0,0,0,.45)}
+.top{display:flex;justify-content:space-between;align-items:center}
+.ttl{font-weight:800;font-size:17px;letter-spacing:.2px}
+.ttl em{font-style:normal;color:var(--y)}
+.live{font-size:11px;font-weight:700;color:var(--y);border:1px solid var(--y);border-radius:3px;padding:1px 6px;letter-spacing:.6px}
+.sb{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;margin:10px 0 8px}
+.sc{background:rgba(0,0,0,.28);border-radius:8px;padding:8px 6px;text-align:center}
+.sc .nm{font-size:21px;font-weight:800;text-transform:uppercase;letter-spacing:.6px;line-height:1.1}.sc.r .nm,.sc.r b{color:var(--r)}.sc.bn .nm,.sc.bn b{color:var(--b)}
+.sc b{display:block;font-size:32px;line-height:1.05;font-weight:800}
+.sc small{display:block;color:#a9c6b9;font-size:11px}
+.sc.r.w{box-shadow:inset 0 0 0 2px var(--r)}.sc.bn.w{box-shadow:inset 0 0 0 2px var(--b)}
+.sc .tag{display:inline-block;background:#fff;color:#111;font-size:10px;font-weight:800;border-radius:3px;padding:1px 6px;margin-bottom:2px;letter-spacing:.6px}
+.vs{color:#a9c6b9;font-weight:800;font-size:12px}
+.tabs{display:flex;gap:4px;margin:0 -12px;padding:0 12px;background:rgba(0,0,0,.22)}
+.tabs button{flex:1;font:inherit;font-size:13px;font-weight:700;color:#b6cfc4;background:none;border:0;padding:10px 4px;border-bottom:3px solid transparent}
+.tabs button.on{color:var(--y);border-bottom-color:var(--y)}
+.cols{display:grid;grid-template-columns:80px 1fr 80px;gap:6px;padding:6px 4px 8px;align-items:center}
+.cols div{text-align:center;font-weight:800;font-size:16px;text-transform:uppercase;letter-spacing:.5px;padding:4px 0 3px;border-radius:4px;background:rgba(0,0,0,.3);line-height:1.1}
+.cols small{display:block;font-size:9px;font-weight:700;letter-spacing:.8px;opacity:.85}
+.cols .l{color:var(--r);border-bottom:3px solid var(--r)}.cols .r{color:var(--b);border-bottom:3px solid var(--b)}
+.cols .m{color:#a9c6b9;font-size:10px;background:none;letter-spacing:.8px}
+.leg{display:flex;justify-content:center;gap:14px;font-size:11px;color:var(--mut);padding:0 12px 8px}
+.leg i{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:4px}
+.upd{padding:8px 12px 4px;color:var(--mut);font-size:11px;text-align:center}
+main{padding:0 8px calc(40px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto}
+.row{display:grid;grid-template-columns:80px 1fr 80px;gap:6px;align-items:center;background:var(--panel);border-bottom:1px solid var(--ln);padding:8px 8px}
+.row:first-child{border-radius:8px 8px 0 0}.row:last-child{border-radius:0 0 8px 8px;border-bottom:0}
+.pk{text-align:center;border-radius:5px;padding:7px 0 6px;background:var(--btn)}
+.pk i{display:block;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.8px;color:var(--mut);text-transform:uppercase}
+.pk b{display:block;font-size:16px;font-weight:800;color:var(--y)}
+.pk.L{border-left:4px solid var(--r)}.pk.R{border-right:4px solid var(--b)}.pk.L b{color:var(--r)}.pk.R b{color:var(--b)}
+.pk small{display:block;font-size:11px;font-weight:700;opacity:.9;margin-top:1px}
+.pk.none b{color:var(--mut)}
+.pk.ok{background:var(--ok)}.pk.bad{background:var(--bad)}
+.pk.ok i,.pk.bad i{color:#e7f5ee}.pk.ok b,.pk.bad b{color:#fff}
+.mid{text-align:center;min-width:0}
+.bd{position:relative;display:inline-block;font-size:11px;font-weight:700;background:var(--panel2);color:var(--mut);border-radius:50%;width:40px;height:40px;line-height:40px;overflow:hidden}
+.bd img{position:absolute;inset:3px;width:34px;height:34px;object-fit:contain}
+.bd.has{background:#fff;font-size:0}
+.mid b{display:block;font-size:14px;font-weight:700;margin-top:2px}
+.ln{display:flex;justify-content:center;gap:6px;margin-top:3px}
+.ln span{display:block;white-space:nowrap;font-size:10px;color:var(--mut);line-height:1.2}
+.ln span u{display:block;text-decoration:none;font-size:14px;font-weight:700;color:var(--tx)}
+.ln i{width:1px;background:var(--ln)}
+.empty{padding:24px;text-align:center;color:var(--mut)}
+</style></head>
+<body>
+<header>
+  <div class="top"><div class="ttl">2026/27 NHL Points Tracker</div><span class="live" id="live" hidden>LIVE</span></div>
+  <div class="sb" id="sb"></div>
+  <div class="tabs" id="tabs"><button data-t="all" class="on">All teams</button><button data-t="diff">We disagree</button></div>
+  <div class="cols" id="cols"></div>
+</header>
+<div class="upd" id="upd">Loading…</div>
+<div class="leg"><span><i style="background:var(--ok)"></i>Projected win</span><span><i style="background:var(--bad)"></i>Projected loss</span><span>% = chance pick hits</span></div>
+<main id="list"></main>
+<script>
+const T="ANA|Anaheim Ducks;BOS|Boston Bruins;BUF|Buffalo Sabres;CGY|Calgary Flames;CAR|Carolina Hurricanes;CHI|Chicago Blackhawks;COL|Colorado Avalanche;CBJ|Columbus Blue Jackets;DAL|Dallas Stars;DET|Detroit Red Wings;EDM|Edmonton Oilers;FLA|Florida Panthers;LAK|Los Angeles Kings;MIN|Minnesota Wild;MTL|Montréal Canadiens;NSH|Nashville Predators;NJD|New Jersey Devils;NYI|New York Islanders;NYR|New York Rangers;OTT|Ottawa Senators;PHI|Philadelphia Flyers;PIT|Pittsburgh Penguins;SJS|San Jose Sharks;SEA|Seattle Kraken;STL|St. Louis Blues;TBL|Tampa Bay Lightning;TOR|Toronto Maple Leafs;UTA|Utah Mammoth;VAN|Vancouver Canucks;VGK|Vegas Golden Knights;WSH|Washington Capitals;WPG|Winnipeg Jets".split(";").map(s=>s.split("|"));
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const get=u=>fetch(u,{cache:"no-store"}).then(r=>{if(!r.ok)throw 0;return r.json()});
+const lab=p=>p==="O"?"Over":p==="U"?"Under":"–";
+const proj=s=>s&&s.gp>0?(typeof s.proj==="number"?s.proj:s.pts/s.gp*84):null; // model projection if present, else simple pace; shown rounded
+const res=(pick,line,p)=>(!pick||p==null||p===line)?"":(pick==="O")===(p>line)?"ok":"bad";
+const prob=(pick,po)=>po==null||!pick?null:(pick==="O"?po:1-po);   // chance this pick hits
+const resP=(pick,line,p,po)=>{const q=prob(pick,po);return q==null?res(pick,line,p):q>0.5?"ok":q<0.5?"bad":""};
+let tab="all",P=null,S=null;
+function btn(pick,line,r,side,q){return`<div class="pk ${side} ${r}${pick?"":" none"}"><i>${lab(pick)}</i><b>${pick?line:"–"}</b>${q==null?"":`<small>${Math.round(q*100)}%</small>`}</div>`}
+function render(){
+  if(!P)return;
+  const c=[0,0],n=[0,0],ex=[0,0],names=P.names||["Me","Ben"];let diff=0,html="";
+  T.forEach(([k,name])=>{
+    const t=P.teams[k]||{},st=(S.teams||{})[k]||{},p=proj(st),po=st.p_over;
+    const ra=resP(t.a,t.line,p,po),rb=resP(t.b,t.line,p,po),qa=prob(t.a,po),qb=prob(t.b,po);
+    if(qa!=null)ex[0]+=qa;if(qb!=null)ex[1]+=qb;
+    if(ra){n[0]++;if(ra==="ok")c[0]++}
+    if(rb){n[1]++;if(rb==="ok")c[1]++}
+    const differs=t.a&&t.b&&t.a!==t.b;if(differs)diff++;
+    if(tab==="diff"&&!differs)return;
+    html+=`<div class="row">${btn(t.a,t.line,ra,"L",qa)}<div class="mid"><span class="bd">${k}<img src="https://assets.nhle.com/logos/nhl/svg/${k}_light.svg" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"></span><b>${esc(name)}</b><div class="ln"><span>Pre-season line<u>${t.line??"–"}</u></span><i></i><span>Current projection<u>${p==null?"–":Math.round(p)}</u></span></div></div>${btn(t.b,t.line,rb,"R",qb)}</div>`;
+  });
+  $("list").innerHTML=html||'<div class="empty">Nothing here yet</div>';
+  const any=n[0]+n[1]>0,lead=c[0]>c[1]?0:c[1]>c[0]?1:-1;
+  $("sb").innerHTML=`<div class="sc r${any&&lead===0?" w":""}">${any&&lead===0?'<span class="tag">LEADING</span>':""}<div class="nm">${esc(names[0])}</div><b>${c[0]}</b><small>proj. correct of ${n[0]}${ex[0]?" · exp. "+ex[0].toFixed(1):""}</small></div><div class="vs">VS</div><div class="sc bn${any&&lead===1?" w":""}">${any&&lead===1?'<span class="tag">LEADING</span>':""}<div class="nm">${esc(names[1])}</div><b>${c[1]}</b><small>proj. correct of ${n[1]}${ex[1]?" · exp. "+ex[1].toFixed(1):""}</small></div>`;
+  $("cols").innerHTML=`<div class="l">${esc(names[0])}<small>PICKS</small></div><div class="m">TEAM</div><div class="r">${esc(names[1])}<small>PICKS</small></div>`;
+  $("tabs").children[1].textContent="We disagree ("+diff+")";
+  $("live").hidden=!S.isLive;
+  $("upd").textContent=S.updated?"Standings as of "+S.updated+" · "+(S.sims?"projection = "+S.sims.toLocaleString()+" simulated seasons (form, pre-season line, schedule, injuries)":S.method==="model"?"projection = current form + pre-season line + remaining schedule":"projection = points ÷ games played × 84")+"":"Waiting for first standings update";
+}
+$("tabs").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  tab=b.dataset.t;[...$("tabs").children].forEach(x=>x.classList.toggle("on",x===b));render();
+});
+// Live standings straight from the NHL each time the app opens; falls back to the
+// daily-updated data/standings.json if the live call is blocked or fails.
+async function live(){
+  const j=await get("https://api-web.nhle.com/v1/standings/now");
+  const teams={};
+  j.standings.forEach(t=>{teams[t.teamAbbrev.default]={gp:t.gamesPlayed,pts:t.points}});
+  if(Object.keys(teams).length!==32)throw 0;
+  return{teams,updated:new Date().toLocaleString([],{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}),isLive:true};
+}
+get("data/picks.json").then(async p=>{
+  P=p;
+  S=await get("data/standings.json").catch(()=>({teams:{}}));
+  render();                              // show the saved daily numbers immediately
+  // The daily file carries the full model projection. Only fall back to live
+  // standings (simple pace) if that file is empty or more than 3 days old.
+  const fresh=S.method==="model"&&S.updated&&(Date.now()-new Date(S.updated))<3*864e5;
+  if(!fresh){try{S=await live();render()}catch(e){}}
+}).catch(()=>{$("upd").textContent="Could not load data"});
+</script>
+</body></html>

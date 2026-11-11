@@ -266,6 +266,9 @@ def parse_espn_injuries(html):
 
 
 def parse_return_date(text, today):
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})", (text or "").strip())      # 2026-11-15 or 2026-11-15T...
+    if m:
+        return datetime.date(int(m[1]), int(m[2]), int(m[3]))
     for fmt in ("%b %d %Y", "%B %d %Y"):
         try:
             d = datetime.datetime.strptime(f"{text.strip().replace(',', '')} {today.year}", fmt).date()
@@ -337,20 +340,88 @@ def build_injury_entries(parsed, rows, today, tiers_fn=value_tiers):
     return out
 
 
+ESPN_API_URL = "https://site.api.espn.com/apis/site/v2/sports/hockey/nhl/injuries"
+
+
+def _status_word(x):
+    t = norm(x.get("description") or x.get("name") or "") if isinstance(x, dict) else norm(x or "")
+    if "day" in t:
+        return "day-to-day"
+    if "reserve" in t or t in ("ir", "injured reserve"):
+        return "injured reserve"
+    return "out"
+
+
+def parse_espn_json(data):
+    """ESPN's JSON feed: {"injuries": [{"displayName": team, "injuries": [{athlete, status, details...}]}]}"""
+    out = []
+    for team in (data or {}).get("injuries", []) or []:
+        abbr = _NAME_TO_ABBR.get(norm(team.get("displayName") or team.get("name") or ""))
+        if not abbr:
+            continue
+        for it in team.get("injuries", []) or []:
+            ath = it.get("athlete") or {}
+            pos = ath.get("position")
+            pos = (pos.get("abbreviation") if isinstance(pos, dict) else pos) or ""
+            det = it.get("details") or {}
+            out.append({
+                "team": abbr,
+                "name": ath.get("displayName") or ath.get("fullName") or it.get("displayName") or "",
+                "pos": pos,
+                "ret": det.get("returnDate") or it.get("returnDate") or "",
+                "status": _status_word(it.get("type") or it.get("status")),
+            })
+    return [x for x in out if x["name"]]
+
+
+def describe_page(html):
+    """Print what a page looks like, so a parser that finds nothing can be fixed from the log."""
+    flat = " ".join(html.split())
+    m = re.search(r"<title>(.*?)</title>", html, re.I | re.S)
+    print(f"  page: {len(html)} chars; title={m.group(1).strip()[:80] if m else None!r}")
+    print(f"  counts: <tr>={len(re.findall('<tr', html))} <table={len(re.findall('<table', html))} "
+          f"team names={sum(1 for n in TEAM_NAMES.values() if n in html)}/32 "
+          f"Day-To-Day={html.count('Day-To-Day')} 'Injured Reserve'={html.count('Injured Reserve')} "
+          f"__espnfitt__={'__espnfitt__' in html} json scripts={html.count('application/json')}")
+    for needle in ("Day-To-Day", "Anaheim Ducks"):
+        k = flat.find(needle)
+        if k >= 0:
+            print(f"  around {needle!r}: {flat[max(0, k - 250):k + 350]!r}")
+
+
+def _http(url):
+    req = urllib.request.Request(url, headers={"User-Agent": "nhl-points-tracker (personal hobby project)"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        return r.read().decode("utf-8", "replace")
+
+
 def fetch_espn_injuries(rows):
     """Never raises: on any problem it reports and returns {} so the daily job still succeeds."""
-    try:
-        req = urllib.request.Request(ESPN_URL, headers={"User-Agent": "nhl-points-tracker (personal hobby project)"})
-        with urllib.request.urlopen(req, timeout=30) as r:
-            html = r.read().decode("utf-8", "replace")
-        parsed = parse_espn_injuries(html)
-        print(f"ESPN injuries: parsed {len(parsed)} injured players")
+    parsed = []
+    try:                                         # 1) ESPN's JSON feed
+        raw = _http(ESPN_API_URL)
+        parsed = parse_espn_json(json.loads(raw))
+        print(f"ESPN JSON feed: parsed {len(parsed)} injured players")
         if not parsed:
-            print("  (nothing parsed -> injuries not applied; the page layout may need a parser update)")
-            return {}
+            print(f"  json feed starts with: {raw[:300]!r}")
+    except Exception as e:
+        print("ESPN JSON feed unavailable:", e)
+    if not parsed:
+        try:                                     # 2) the injuries web page
+            html = _http(ESPN_URL)
+            parsed = parse_espn_injuries(html)
+            print(f"ESPN web page: parsed {len(parsed)} injured players")
+            if not parsed:
+                describe_page(html)
+        except Exception as e:
+            print("ESPN web page unavailable:", e)
+    if not parsed:
+        print("  -> injuries not applied today")
+        return {}
+    try:
         return build_injury_entries(parsed, rows, datetime.date.today())
     except Exception as e:
-        print("ESPN injuries unavailable, continuing without them:", e)
+        print("Could not build injury entries:", e)
         return {}
 
 

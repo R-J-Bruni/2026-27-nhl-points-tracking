@@ -13,8 +13,10 @@ How a team's projection is built
    off the team's talent for exactly the games they will miss.
 3. SIMULATION: every remaining game in the league is played SIMS times using each
    team's talent (with home-ice advantage and realistic overtime/shootout points).
-   The projection is the average final total; "p_over" is the share of simulated
-   seasons in which the team finishes above its pre-season line.
+   Each simulated season also gets its own error in how good every team really is,
+   because that is only an estimate. The projection is the average final total;
+   "p_over" is the share of simulated seasons in which the team finishes above its
+   pre-season line.
 """
 import json, math, random, sys, time, urllib.request, datetime, pathlib
 
@@ -30,6 +32,7 @@ LUCK_WEIGHT = 0.5   # share of "current form" taken from goal difference vs. act
 PYTH_EXP = 2.0      # Pythagorean exponent for goals
 HOME_LOGIT = 0.18   # home-ice advantage on the log-odds scale (~54.5% for an even matchup)
 SIMS = 10000
+TALENT_SD = 0.115   # real spread in team talent, in points per game (about 9.5 points over 82 games)
 
 
 def logit(p):
@@ -127,6 +130,9 @@ def simulate(rows, sched, lines, injuries=None, sims=SIMS, seed=None):
         p_reg = min(0.99, max(0.01, (p - q * p_ot) / (1 - q)))           # keeps overall win chance = p
         pre.append((idx[h], idx[a], p_reg, p_ot))
 
+    # We only ESTIMATE each team's talent, and the estimate is shakier early in the season.
+    # Give every simulated season its own talent error so the probabilities aren't overconfident.
+    talent_sd = [TALENT_SD * math.sqrt(K_PRIOR / (rows[k]["gp"] + K_PRIOR)) * len(sched.get(k, [])) for k in abbrs]
     base = [rows[k]["pts"] for k in abbrs]
     line = [lines.get(k) for k in abbrs]
     n = len(abbrs)
@@ -145,8 +151,9 @@ def simulate(rows, sched, lines, injuries=None, sims=SIMS, seed=None):
             else:
                 pts[ia] += 2
         for i in range(n):
-            total[i] += pts[i]
-            if line[i] is not None and pts[i] > line[i]:
+            final = pts[i] + (rng.gauss(0, talent_sd[i]) if talent_sd[i] else 0)
+            total[i] += final
+            if line[i] is not None and final > line[i]:
                 over[i] += 1
 
     out = {}

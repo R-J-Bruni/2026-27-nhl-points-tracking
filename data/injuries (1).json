@@ -1,0 +1,5 @@
+{
+ "_help": "List key players who are out. games_out = how many more games they will miss (use 999 if out for the season). impact = points per game the team loses without them: star goalie about 0.08, star forward or top defenseman about 0.05, top-six forward or top-four defenseman about 0.03, depth player about 0.01. Remove an entry when the player returns.",
+ "updated": "",
+ "teams": {}
+}

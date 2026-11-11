@@ -2,21 +2,22 @@
  "updated": "2026-11-11",
  "method": "model",
  "sims": 10000,
+ "injuries": {},
  "teams": {
   "CAR": {
    "gp": 19,
    "pts": 30,
-   "proj": 122.0,
+   "proj": 122.1,
    "pace": 132.6,
-   "p_over": 0.936,
+   "p_over": 0.939,
    "src": "sim"
   },
   "MIN": {
    "gp": 20,
    "pts": 30,
-   "proj": 117.5,
+   "proj": 117.6,
    "pace": 126.0,
-   "p_over": 0.955,
+   "p_over": 0.959,
    "src": "sim"
   },
   "EDM": {
@@ -24,15 +25,15 @@
    "pts": 29,
    "proj": 117.0,
    "pace": 128.2,
-   "p_over": 0.922,
+   "p_over": 0.919,
    "src": "sim"
   },
   "BOS": {
    "gp": 18,
    "pts": 27,
-   "proj": 109.6,
+   "proj": 109.7,
    "pace": 126.0,
-   "p_over": 0.991,
+   "p_over": 0.992,
    "src": "sim"
   },
   "MTL": {
@@ -40,53 +41,53 @@
    "pts": 26,
    "proj": 107.2,
    "pace": 121.3,
-   "p_over": 0.796,
+   "p_over": 0.793,
    "src": "sim"
   },
   "VGK": {
    "gp": 19,
    "pts": 26,
-   "proj": 109.9,
+   "proj": 110.0,
    "pace": 114.9,
-   "p_over": 0.767,
+   "p_over": 0.763,
    "src": "sim"
   },
   "NJD": {
    "gp": 19,
    "pts": 26,
-   "proj": 105.9,
+   "proj": 106.1,
    "pace": 114.9,
-   "p_over": 0.847,
+   "p_over": 0.851,
    "src": "sim"
   },
   "TBL": {
    "gp": 17,
    "pts": 24,
-   "proj": 108.9,
+   "proj": 108.7,
    "pace": 118.6,
-   "p_over": 0.72,
+   "p_over": 0.712,
    "src": "sim"
   },
   "COL": {
    "gp": 19,
    "pts": 24,
-   "proj": 108.7,
+   "proj": 108.4,
    "pace": 106.1,
-   "p_over": 0.55,
+   "p_over": 0.548,
    "src": "sim"
   },
   "OTT": {
    "gp": 19,
    "pts": 24,
-   "proj": 98.7,
+   "proj": 98.4,
    "pace": 106.1,
-   "p_over": 0.679,
+   "p_over": 0.66,
    "src": "sim"
   },
   "NSH": {
    "gp": 18,
    "pts": 23,
-   "proj": 97.4,
+   "proj": 97.6,
    "pace": 107.3,
    "p_over": 0.902,
    "src": "sim"
@@ -94,17 +95,17 @@
   "DAL": {
    "gp": 17,
    "pts": 22,
-   "proj": 105.0,
+   "proj": 104.8,
    "pace": 108.7,
-   "p_over": 0.684,
+   "p_over": 0.676,
    "src": "sim"
   },
   "FLA": {
    "gp": 19,
    "pts": 22,
-   "proj": 100.7,
+   "proj": 100.5,
    "pace": 97.3,
-   "p_over": 0.227,
+   "p_over": 0.224,
    "src": "sim"
   },
   "ANA": {
@@ -112,31 +113,31 @@
    "pts": 21,
    "proj": 96.9,
    "pace": 98.0,
-   "p_over": 0.56,
+   "p_over": 0.564,
    "src": "sim"
   },
   "UTA": {
    "gp": 18,
    "pts": 21,
-   "proj": 97.5,
+   "proj": 97.7,
    "pace": 98.0,
-   "p_over": 0.544,
+   "p_over": 0.55,
    "src": "sim"
   },
   "NYR": {
    "gp": 19,
    "pts": 21,
-   "proj": 90.9,
+   "proj": 90.6,
    "pace": 92.8,
-   "p_over": 0.603,
+   "p_over": 0.593,
    "src": "sim"
   },
   "WSH": {
    "gp": 16,
    "pts": 20,
-   "proj": 102.0,
+   "proj": 101.8,
    "pace": 105.0,
-   "p_over": 0.562,
+   "p_over": 0.557,
    "src": "sim"
   },
   "SEA": {
@@ -144,15 +145,15 @@
    "pts": 19,
    "proj": 89.8,
    "pace": 99.8,
-   "p_over": 0.827,
+   "p_over": 0.832,
    "src": "sim"
   },
   "BUF": {
    "gp": 17,
    "pts": 19,
-   "proj": 91.5,
+   "proj": 91.6,
    "pace": 93.9,
-   "p_over": 0.341,
+   "p_over": 0.34,
    "src": "sim"
   },
   "WPG": {
@@ -160,7 +161,7 @@
    "pts": 19,
    "proj": 84.3,
    "pace": 84.0,
-   "p_over": 0.45,
+   "p_over": 0.455,
    "src": "sim"
   },
   "NYI": {
@@ -168,13 +169,13 @@
    "pts": 18,
    "proj": 87.8,
    "pace": 88.9,
-   "p_over": 0.516,
+   "p_over": 0.513,
    "src": "sim"
   },
   "STL": {
    "gp": 18,
    "pts": 18,
-   "proj": 86.4,
+   "proj": 86.5,
    "pace": 84.0,
    "p_over": 0.545,
    "src": "sim"
@@ -182,17 +183,17 @@
   "TOR": {
    "gp": 20,
    "pts": 18,
-   "proj": 84.9,
+   "proj": 85.0,
    "pace": 75.6,
-   "p_over": 0.123,
+   "p_over": 0.132,
    "src": "sim"
   },
   "CGY": {
    "gp": 18,
    "pts": 17,
-   "proj": 76.6,
+   "proj": 76.8,
    "pace": 79.3,
-   "p_over": 0.46,
+   "p_over": 0.467,
    "src": "sim"
   },
   "DET": {
@@ -200,31 +201,31 @@
    "pts": 17,
    "proj": 79.3,
    "pace": 75.2,
-   "p_over": 0.19,
+   "p_over": 0.184,
    "src": "sim"
   },
   "SJS": {
    "gp": 20,
    "pts": 17,
-   "proj": 80.8,
+   "proj": 80.7,
    "pace": 71.4,
-   "p_over": 0.065,
+   "p_over": 0.066,
    "src": "sim"
   },
   "PHI": {
    "gp": 20,
    "pts": 15,
-   "proj": 74.3,
+   "proj": 74.4,
    "pace": 63.0,
-   "p_over": 0.022,
+   "p_over": 0.024,
    "src": "sim"
   },
   "CBJ": {
    "gp": 16,
    "pts": 14,
-   "proj": 82.6,
+   "proj": 82.5,
    "pace": 73.5,
-   "p_over": 0.156,
+   "p_over": 0.154,
    "src": "sim"
   },
   "PIT": {
@@ -232,23 +233,23 @@
    "pts": 14,
    "proj": 79.4,
    "pace": 65.3,
-   "p_over": 0.127,
+   "p_over": 0.117,
    "src": "sim"
   },
   "LAK": {
    "gp": 16,
    "pts": 12,
-   "proj": 81.8,
+   "proj": 81.7,
    "pace": 63.0,
-   "p_over": 0.075,
+   "p_over": 0.073,
    "src": "sim"
   },
   "CHI": {
    "gp": 18,
    "pts": 9,
-   "proj": 59.1,
+   "proj": 59.2,
    "pace": 42.0,
-   "p_over": 0.013,
+   "p_over": 0.015,
    "src": "sim"
   },
   "VAN": {
@@ -256,7 +257,7 @@
    "pts": 7,
    "proj": 53.4,
    "pace": 29.4,
-   "p_over": 0.009,
+   "p_over": 0.008,
    "src": "sim"
   }
  }

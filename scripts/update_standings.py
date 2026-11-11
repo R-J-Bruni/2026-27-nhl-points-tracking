@@ -18,7 +18,8 @@ How a team's projection is built
    "p_over" is the share of simulated seasons in which the team finishes above its
    pre-season line.
 """
-import json, math, random, sys, time, urllib.request, datetime, pathlib
+import json, math, random, re, sys, time, unicodedata, urllib.request, datetime, pathlib
+from html.parser import HTMLParser
 
 BASE = "https://api-web.nhle.com/v1"
 ROOT = pathlib.Path(__file__).resolve().parent.parent
@@ -182,6 +183,177 @@ def get(path):
     raise last
 
 
+# ---------------------------------------------------------------------------
+# Automatic injuries (ESPN injuries page -> games missed + how much each player matters)
+# ---------------------------------------------------------------------------
+ESPN_URL = "https://www.espn.com/nhl/injuries"
+GAMES_PER_DAY = 0.44          # a team plays about 84 games in ~190 days
+SKATER_TIERS = (0.05, 0.03, 0.012)   # points/game a team loses: star, top-nine/top-four, depth
+GOALIE_TIERS = (0.07, 0.01)          # starter, backup
+DEFAULT_SKATER, DEFAULT_GOALIE = 0.025, 0.04   # when a player can't be matched to team stats
+TEAM_NAMES = {
+    "ANA": "Anaheim Ducks", "BOS": "Boston Bruins", "BUF": "Buffalo Sabres", "CGY": "Calgary Flames",
+    "CAR": "Carolina Hurricanes", "CHI": "Chicago Blackhawks", "COL": "Colorado Avalanche",
+    "CBJ": "Columbus Blue Jackets", "DAL": "Dallas Stars", "DET": "Detroit Red Wings",
+    "EDM": "Edmonton Oilers", "FLA": "Florida Panthers", "LAK": "Los Angeles Kings",
+    "MIN": "Minnesota Wild", "MTL": "Montreal Canadiens", "NSH": "Nashville Predators",
+    "NJD": "New Jersey Devils", "NYI": "New York Islanders", "NYR": "New York Rangers",
+    "OTT": "Ottawa Senators", "PHI": "Philadelphia Flyers", "PIT": "Pittsburgh Penguins",
+    "SJS": "San Jose Sharks", "SEA": "Seattle Kraken", "STL": "St. Louis Blues",
+    "TBL": "Tampa Bay Lightning", "TOR": "Toronto Maple Leafs", "UTA": "Utah Mammoth",
+    "VAN": "Vancouver Canucks", "VGK": "Vegas Golden Knights", "WSH": "Washington Capitals",
+    "WPG": "Winnipeg Jets",
+}
+
+
+def norm(s):
+    s = unicodedata.normalize("NFKD", str(s))
+    s = "".join(c for c in s if not unicodedata.combining(c))
+    return " ".join(s.lower().split())
+
+
+_NAME_TO_ABBR = {norm(v): k for k, v in TEAM_NAMES.items()}
+
+
+class _Rows(HTMLParser):
+    """Collects, in page order, loose text snippets and table rows (as lists of cell text)."""
+    def __init__(self):
+        super().__init__()
+        self.events, self.cur, self.buf = [], None, []
+        self.in_cell, self.skip = False, 0
+
+    def handle_starttag(self, tag, attrs):
+        if tag in ("script", "style"):
+            self.skip += 1
+        elif tag == "tr":
+            self.cur = []
+        elif tag in ("td", "th") and self.cur is not None:
+            self.in_cell, self.buf = True, []
+
+    def handle_endtag(self, tag):
+        if tag in ("script", "style"):
+            self.skip = max(0, self.skip - 1)
+        elif tag in ("td", "th") and self.in_cell:
+            self.cur.append(" ".join("".join(self.buf).split()))
+            self.in_cell = False
+        elif tag == "tr" and self.cur is not None:
+            self.events.append(("row", self.cur))
+            self.cur = None
+
+    def handle_data(self, data):
+        if self.skip:
+            return
+        if self.in_cell:
+            self.buf.append(data)
+        elif self.cur is None and data.strip():
+            self.events.append(("text", data.strip()))
+
+
+def parse_espn_injuries(html):
+    """-> [{team, name, pos, ret, status}] . A team heading (its full name as plain text) sets the
+    current team; each following table row with a recognised status is one injured player."""
+    p = _Rows()
+    p.feed(html)
+    team, out = None, []
+    for kind, val in p.events:
+        if kind == "text":
+            t = _NAME_TO_ABBR.get(norm(val))
+            if t:
+                team = t
+        elif team and len(val) >= 4 and norm(val[3]) in ("out", "day-to-day", "injured reserve"):
+            out.append({"team": team, "name": val[0], "pos": val[1], "ret": val[2], "status": norm(val[3])})
+    return out
+
+
+def parse_return_date(text, today):
+    for fmt in ("%b %d %Y", "%B %d %Y"):
+        try:
+            d = datetime.datetime.strptime(f"{text.strip().replace(',', '')} {today.year}", fmt).date()
+        except ValueError:
+            continue
+        if (today - d).days > 60:        # e.g. "Jan 5" seen in November means next year
+            d = d.replace(year=today.year + 1)
+        return d
+    return None
+
+
+def games_missed(status, ret_text, today, left):
+    """-> (games the player will still miss, share of full impact to apply)."""
+    d = parse_return_date(ret_text, today)
+    if status == "day-to-day":
+        return min(3, left), 0.5
+    if d is None:
+        n = 20                       # on IR / out with no date given
+    else:
+        days = (d - today).days
+        n = round(days * GAMES_PER_DAY) if days > 0 else 3   # listed as out past the estimate
+    return max(1, min(n, left)), 1.0
+
+
+def _nm(x):
+    return x.get("default", "") if isinstance(x, dict) else str(x or "")
+
+
+def value_tiers(abbr):
+    """normalised player name -> points/game the team loses without him, ranked within the team.
+    Skaters: top 3 by points per game = star, next 6 = regular, rest = depth.
+    Goalies: most starts = starter, the other = backup."""
+    try:
+        cs = get(f"/club-stats/{abbr}/now")
+    except Exception as e:
+        print("  club stats unavailable for", abbr, e)
+        return {}
+    time.sleep(0.3)
+    tiers = {}
+    skaters = sorted(cs.get("skaters", []), key=lambda p: (
+        (p.get("points") or 0) / p["gamesPlayed"] if (p.get("gamesPlayed") or 0) >= 5 else 0,
+        p.get("points") or 0), reverse=True)
+    for i, p in enumerate(skaters):
+        tiers[norm(_nm(p.get("firstName")) + " " + _nm(p.get("lastName")))] = \
+            SKATER_TIERS[0] if i < 3 else SKATER_TIERS[1] if i < 9 else SKATER_TIERS[2]
+    goalies = sorted(cs.get("goalies", []), key=lambda p: p.get("gamesStarted") or 0, reverse=True)
+    for i, p in enumerate(goalies):
+        tiers[norm(_nm(p.get("firstName")) + " " + _nm(p.get("lastName")))] = \
+            GOALIE_TIERS[0] if i == 0 else GOALIE_TIERS[1]
+    return tiers
+
+
+def build_injury_entries(parsed, rows, today, tiers_fn=value_tiers):
+    out, cache = {}, {}
+    for p in parsed:
+        k = p["team"]
+        if k not in rows:
+            continue
+        left = SEASON_GAMES - rows[k]["gp"]
+        n, mult = games_missed(p["status"], p["ret"], today, left)
+        if k not in cache:
+            cache[k] = tiers_fn(k)
+        default = DEFAULT_GOALIE if p["pos"].strip().upper() == "G" else DEFAULT_SKATER
+        impact = cache[k].get(norm(p["name"]), default) * mult
+        out.setdefault(k, []).append({
+            "player": p["name"], "pos": p["pos"], "status": p["status"], "return": p["ret"],
+            "games_out": n, "impact": round(impact, 4),
+        })
+    return out
+
+
+def fetch_espn_injuries(rows):
+    """Never raises: on any problem it reports and returns {} so the daily job still succeeds."""
+    try:
+        req = urllib.request.Request(ESPN_URL, headers={"User-Agent": "nhl-points-tracker (personal hobby project)"})
+        with urllib.request.urlopen(req, timeout=30) as r:
+            html = r.read().decode("utf-8", "replace")
+        parsed = parse_espn_injuries(html)
+        print(f"ESPN injuries: parsed {len(parsed)} injured players")
+        if not parsed:
+            print("  (nothing parsed -> injuries not applied; the page layout may need a parser update)")
+            return {}
+        return build_injury_entries(parsed, rows, datetime.date.today())
+    except Exception as e:
+        print("ESPN injuries unavailable, continuing without them:", e)
+        return {}
+
+
 def load_injuries():
     """data/injuries.json -> abbr -> [{"games_out", "impact"}]. Bad entries are skipped."""
     try:
@@ -232,17 +404,20 @@ def main():
             ok = False
         time.sleep(0.3)
 
-    injuries = load_injuries()
+    auto = fetch_espn_injuries(rows)
+    manual = load_injuries()     # optional extras from data/injuries.json
+    injuries = {k: auto.get(k, []) + manual.get(k, []) for k in set(auto) | set(manual)}
     if ok and len(sched) == 32:
         model = simulate(rows, sched, lines, injuries)
-        print(f"Simulated {SIMS} seasons; injuries applied to {len(injuries)} teams")
+        print(f"Simulated {SIMS} seasons; injuries applied to {len(injuries)} teams "
+              f"({sum(len(v) for v in auto.values())} from ESPN, {sum(len(v) for v in manual.values())} manual)")
     else:
         print("Schedules incomplete -> falling back to the simple model (no simulation)")
         model = analytic_model(rows, opps_only, lines)
 
     teams = {k: {"gp": r["gp"], "pts": r["pts"], **model[k]} for k, r in rows.items()}
     out = {"updated": datetime.date.today().isoformat(), "method": "model",
-           "sims": SIMS if ok else 0, "teams": teams}
+           "sims": SIMS if ok else 0, "injuries": auto, "teams": teams}
     OUT.write_text(json.dumps(out, indent=1))
     print("Wrote", OUT)
 

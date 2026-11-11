@@ -93,7 +93,7 @@ function render(){
   });
   $("list").innerHTML=html||'<div class="empty">Nothing here yet</div>';
   const any=n[0]+n[1]>0,lead=c[0]>c[1]?0:c[1]>c[0]?1:-1;
-  $("sb").innerHTML=`<div class="sc r${any&&lead===0?" w":""}">${any&&lead===0?'<span class="tag">LEADING</span>':""}<div class="nm">${esc(names[0])}</div><b>${c[0]}</b><small>proj. correct of ${n[0]}${ex[0]?" · exp. "+ex[0].toFixed(1):""}</small></div><div class="vs">VS</div><div class="sc bn${any&&lead===1?" w":""}">${any&&lead===1?'<span class="tag">LEADING</span>':""}<div class="nm">${esc(names[1])}</div><b>${c[1]}</b><small>proj. correct of ${n[1]}${ex[1]?" · exp. "+ex[1].toFixed(1):""}</small></div>`;
+  $("sb").innerHTML=`<div class="sc r${any&&lead===0?" w":""}">${any&&lead===0?'<span class="tag">LEADING</span>':""}<div class="nm">${esc(names[0])}</div><b>${c[0]}</b><small>projected correct of ${n[0]}</small></div><div class="vs">VS</div><div class="sc bn${any&&lead===1?" w":""}">${any&&lead===1?'<span class="tag">LEADING</span>':""}<div class="nm">${esc(names[1])}</div><b>${c[1]}</b><small>projected correct of ${n[1]}</small></div>`;
   $("cols").innerHTML=`<div class="l">${esc(names[0])}<small>PICKS</small></div><div class="m">TEAM</div><div class="r">${esc(names[1])}<small>PICKS</small></div>`;
   $("tabs").children[1].textContent="We disagree ("+diff+")";
   $("live").hidden=!S.isLive;

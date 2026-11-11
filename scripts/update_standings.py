@@ -18,7 +18,7 @@ How a team's projection is built
    "p_over" is the share of simulated seasons in which the team finishes above its
    pre-season line.
 """
-import json, math, random, re, sys, time, unicodedata, urllib.request, datetime, pathlib
+import csv, gzip, io, json, math, random, re, sys, time, unicodedata, urllib.request, datetime, pathlib
 from html.parser import HTMLParser
 
 BASE = "https://api-web.nhle.com/v1"
@@ -33,6 +33,10 @@ LUCK_WEIGHT = 0.5   # share of "current form" taken from goal difference vs. act
 PYTH_EXP = 2.0      # Pythagorean exponent for goals
 HOME_LOGIT = 0.18   # home-ice advantage on the log-odds scale (~54.5% for an even matchup)
 SIMS = 10000
+HALF_LIFE = 25      # recent games count double: a game 25 games ago counts half as much as the latest
+FORM_WEIGHTS = (0.4, 0.4, 0.2)   # share of "current form" from: season points, expected goals, actual goals
+MONEYPUCK_URL = "https://moneypuck.com/moneypuck/playerData/careers/gameByGame/all_teams.csv"
+MP_CODES = {"T.B": "TBL", "N.J": "NJD", "S.J": "SJS", "L.A": "LAK"}   # MoneyPuck writes these with dots
 TALENT_SD = 0.115   # real spread in team talent, in points per game (about 9.5 points over 82 games)
 
 
@@ -51,34 +55,62 @@ def to_share(rate, q):
     return (rate - 0.675 * q) / (2 - 0.35 * q)
 
 
-def team_rates(rows, lines):
-    """-> (rate per team in points/game, pool = points handed out per game, both teams)."""
+def weighted_share(games, i_for, i_against):
+    """Recency-weighted Pythagorean share from per-game tuples. Returns (share, effective games)."""
+    n = len(games)
+    if n == 0:
+        return None, 0
+    w = [0.5 ** ((n - 1 - i) / HALF_LIFE) for i in range(n)]
+    f = sum(wi * g[i_for] for wi, g in zip(w, games))
+    a = sum(wi * g[i_against] for wi, g in zip(w, games))
+    if f + a <= 0:
+        return None, 0
+    ess = sum(w) ** 2 / sum(wi * wi for wi in w)
+    return f ** PYTH_EXP / (f ** PYTH_EXP + a ** PYTH_EXP), ess
+
+
+def team_rates(rows, lines, recent=None):
+    """-> (rate per team in points/game, pool = points handed out per game, both teams).
+    recent: abbr -> chronological list of (xGF, xGA, GF, GA) per game, if available."""
+    recent = recent or {}
     tot_gp = sum(r["gp"] for r in rows.values())
     tot_pts = sum(r["pts"] for r in rows.values())
     pool = 2 * tot_pts / tot_gp
     avg_rate = pool / 2
-    rate = {}
+    rate, form = {}, {}
     for k, r in rows.items():
         g = r["gp"]
         prior = lines[k] / SEASON_GAMES if lines.get(k) else avg_rate
         if g == 0:
             rate[k] = prior
+            form[k] = "prior"
             continue
         obs = r["pts"] / g
+        xg, ess = weighted_share(recent.get(k, []), 0, 1)
+        gl, _ = weighted_share(recent.get(k, []), 2, 3)
         gf, ga = r.get("gf"), r.get("ga")
-        if gf is not None and ga is not None and gf + ga > 0:
+        if xg is not None and gl is not None:
+            wo, wx, wg = FORM_WEIGHTS
+            skill = wo * obs + wx * pool * xg + wg * pool * gl
+            g_eff = min(g, ess)
+            form[k] = "xg"
+        elif gf is not None and ga is not None and gf + ga > 0:
             wp = gf ** PYTH_EXP / (gf ** PYTH_EXP + ga ** PYTH_EXP)
             skill = (1 - LUCK_WEIGHT) * obs + LUCK_WEIGHT * pool * wp
+            g_eff = g
+            form[k] = "goals"
         else:
-            skill = obs
-        rate[k] = (g * skill + K_PRIOR * prior) / (g + K_PRIOR)
+            skill, g_eff = obs, g
+            form[k] = "points"
+        rate[k] = (g_eff * skill + K_PRIOR * prior) / (g_eff + K_PRIOR)
+    team_rates.form = form      # which inputs each team used (reported in the output file)
     return rate, pool
 
 
-def analytic_model(rows, remaining_opps, lines):
+def analytic_model(rows, remaining_opps, lines, recent=None):
     """Fallback with no simulation or injuries (used if schedules can't be loaded).
     remaining_opps: abbr -> [opponent abbr] or None."""
-    rate, pool = team_rates(rows, lines)
+    rate, pool = team_rates(rows, lines, recent)
     share = {k: min(0.95, max(0.05, v / pool)) for k, v in rate.items()}
     out = {}
     for k, r in rows.items():
@@ -99,13 +131,13 @@ def analytic_model(rows, remaining_opps, lines):
     return out
 
 
-def simulate(rows, sched, lines, injuries=None, sims=SIMS, seed=None):
+def simulate(rows, sched, lines, injuries=None, sims=SIMS, seed=None, recent=None):
     """sched: abbr -> ordered list of (game_id, home, away) still to play.
     injuries: abbr -> [{"games_out": int, "impact": points-per-game}, ...]."""
     injuries = injuries or {}
     rng = random.Random(seed)
     rnd = rng.random
-    rate, pool = team_rates(rows, lines)
+    rate, pool = team_rates(rows, lines, recent)
     q = min(0.30, max(0.15, pool - 2))          # share of games that reach OT / shootout
 
     abbrs = sorted(rows)
@@ -166,6 +198,7 @@ def simulate(rows, sched, lines, injuries=None, sims=SIMS, seed=None):
             "pace": round(r["pts"] / r["gp"] * SEASON_GAMES, 1) if r["gp"] else None,
             "p_over": round(over[i] / sims, 3) if line[i] is not None else None,
             "src": "sim",
+            "form": getattr(team_rates, "form", {}).get(k),
         }
     return out
 
@@ -181,6 +214,67 @@ def get(path):
             last = e
             time.sleep(2)
     raise last
+
+
+# ---------------------------------------------------------------------------
+# Recent form from MoneyPuck's free game-by-game team data (expected goals)
+# Data: MoneyPuck.com (free for non-commercial use with credit)
+# ---------------------------------------------------------------------------
+def parse_moneypuck(lines, season):
+    """CSV lines -> abbr -> chronological [(xGF, xGA, GF, GA), ...] for one season, all situations."""
+    rd = csv.reader(lines)
+    head = next(rd)
+    col = {h.strip().lower(): i for i, h in enumerate(head)}
+
+    def idx(*names):
+        for n in names:
+            if n in col:
+                return col[n]
+        raise KeyError(names[0])
+
+    i_team, i_season = idx("team", "playerteam"), idx("season")
+    i_sit = idx("situation")
+    i_xf, i_xa = idx("xgoalsfor"), idx("xgoalsagainst")
+    i_gf, i_ga = idx("goalsfor"), idx("goalsagainst")
+    i_order = idx("gameid", "gamedate")
+    games = {}
+    for row in rd:
+        if len(row) <= max(i_team, i_season, i_sit, i_xf, i_xa, i_gf, i_ga, i_order):
+            continue
+        if row[i_season].strip() != str(season) or row[i_sit].strip().lower() != "all":
+            continue
+        try:
+            rec = (int(float(row[i_order])), float(row[i_xf]), float(row[i_xa]), float(row[i_gf]), float(row[i_ga]))
+        except ValueError:
+            continue
+        t = row[i_team].strip()
+        games.setdefault(MP_CODES.get(t, t), []).append(rec)
+    return {k: [r[1:] for r in sorted(v)] for k, v in games.items()}
+
+
+def fetch_moneypuck(rows):
+    """Never raises: returns {} on any problem and the model falls back to standings-only form."""
+    today = datetime.date.today()
+    season = today.year if today.month >= 9 else today.year - 1
+    try:
+        req = urllib.request.Request(MONEYPUCK_URL, headers={
+            "User-Agent": "nhl-points-tracker (personal hobby project)", "Accept-Encoding": "gzip"})
+        with urllib.request.urlopen(req, timeout=120) as r:
+            raw = r.read()
+            if r.headers.get("Content-Encoding") == "gzip" or raw[:2] == b"\x1f\x8b":
+                raw = gzip.decompress(raw)
+        text = raw.decode("utf-8", "replace")
+        recent = parse_moneypuck(io.StringIO(text), season)
+        have = [k for k in rows if len(recent.get(k, [])) > 0]
+        print(f"MoneyPuck: {len(raw) // 1024} KB, season {season}, expected-goals form for {len(have)}/32 teams")
+        if len(have) < 28:
+            print("  header:", text[:300].splitlines()[0][:300] if text else "(empty)")
+            print("  -> too few teams matched; using standings-only form today")
+            return {}
+        return recent
+    except Exception as e:
+        print("MoneyPuck unavailable, using standings-only form:", e)
+        return {}
 
 
 # ---------------------------------------------------------------------------
@@ -475,20 +569,21 @@ def main():
             ok = False
         time.sleep(0.3)
 
+    recent = fetch_moneypuck(rows)
     auto = fetch_espn_injuries(rows)
     manual = load_injuries()     # optional extras from data/injuries.json
     injuries = {k: auto.get(k, []) + manual.get(k, []) for k in set(auto) | set(manual)}
     if ok and len(sched) == 32:
-        model = simulate(rows, sched, lines, injuries)
+        model = simulate(rows, sched, lines, injuries, recent=recent)
         print(f"Simulated {SIMS} seasons; injuries applied to {len(injuries)} teams "
               f"({sum(len(v) for v in auto.values())} from ESPN, {sum(len(v) for v in manual.values())} manual)")
     else:
         print("Schedules incomplete -> falling back to the simple model (no simulation)")
-        model = analytic_model(rows, opps_only, lines)
+        model = analytic_model(rows, opps_only, lines, recent)
 
     teams = {k: {"gp": r["gp"], "pts": r["pts"], **model[k]} for k, r in rows.items()}
     out = {"updated": datetime.date.today().isoformat(), "method": "model",
-           "sims": SIMS if ok else 0, "injuries": auto, "teams": teams}
+           "sims": SIMS if ok else 0, "xg": bool(recent), "injuries": auto, "teams": teams}
     OUT.write_text(json.dumps(out, indent=1))
     print("Wrote", OUT)
 

@@ -545,6 +545,8 @@ def main():
         rows[t["teamAbbrev"]["default"]] = {
             "gp": t["gamesPlayed"], "pts": t["points"],
             "gf": t.get("goalFor"), "ga": t.get("goalAgainst"),
+            "w": t.get("wins"), "l": t.get("losses"), "otl": t.get("otLosses"),
+            "rw": t.get("regulationWins"), "row": t.get("regulationPlusOtWins"),
         }
     if len(rows) != 32:
         sys.exit(f"Expected 32 teams, got {len(rows)}; leaving file unchanged")
@@ -581,7 +583,9 @@ def main():
         print("Schedules incomplete -> falling back to the simple model (no simulation)")
         model = analytic_model(rows, opps_only, lines, recent)
 
-    teams = {k: {"gp": r["gp"], "pts": r["pts"], **model[k]} for k, r in rows.items()}
+    teams = {k: {"gp": r["gp"], "pts": r["pts"],
+                 **{f: r.get(f) for f in ("w", "l", "otl", "rw", "row", "gf", "ga")}, **model[k]}
+             for k, r in rows.items()}
     out = {"updated": datetime.date.today().isoformat(), "method": "model",
            "sims": SIMS if ok else 0, "xg": bool(recent), "injuries": auto, "teams": teams}
     OUT.write_text(json.dumps(out, indent=1))

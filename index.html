@@ -35,8 +35,17 @@ header{position:sticky;top:0;z-index:5;background:var(--g);padding:calc(10px + e
 .leg i{display:inline-block;width:10px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:4px}
 .upd{padding:8px 12px 4px;color:var(--mut);font-size:11px;text-align:center}
 main{padding:0 8px calc(40px + env(safe-area-inset-bottom,0px));max-width:560px;margin:0 auto}
-.row{display:grid;grid-template-columns:80px 1fr 80px;gap:6px;align-items:center;background:var(--panel);border-bottom:1px solid var(--ln);padding:8px 8px}
-.row:first-child{border-radius:8px 8px 0 0}.row:last-child{border-radius:0 0 8px 8px;border-bottom:0}
+.grp{background:var(--panel);border-radius:8px;overflow:hidden;margin-bottom:10px}
+.gh{padding:8px 10px;background:var(--panel2);font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#cfe3da}
+.row{display:grid;grid-template-columns:80px 1fr 80px;gap:6px;align-items:center;border-bottom:1px solid var(--ln);padding:8px 8px}
+.row:last-child{border-bottom:0}
+.cut{height:0;border-top:2px dashed var(--y);margin:6px 8px;position:relative}
+.cut span{position:absolute;right:0;top:-8px;background:var(--panel);font-size:9px;font-weight:800;color:var(--y);padding:0 6px;letter-spacing:.6px;text-transform:uppercase}
+.rk{display:inline-block;background:var(--btn);color:var(--y);font-size:10px;font-weight:800;border-radius:3px;padding:1px 5px;margin-right:5px;letter-spacing:.3px;vertical-align:1px}
+.st{font-size:10px;color:var(--mut);margin-top:1px;letter-spacing:.3px}
+.sorts{display:flex;gap:6px;overflow-x:auto;padding:10px 10px 4px;max-width:560px;margin:0 auto;-webkit-overflow-scrolling:touch}
+.sorts button{flex:0 0 auto;font:inherit;font-size:13px;font-weight:700;color:var(--tx);background:var(--panel);border:1px solid var(--ln);border-radius:999px;padding:7px 13px}
+.sorts button.on{background:var(--y);border-color:var(--y);color:#111}
 .pk{text-align:center;border-radius:5px;padding:7px 0 6px;background:var(--btn)}
 .pk i{display:block;font-style:normal;font-size:10px;font-weight:700;letter-spacing:.8px;color:var(--mut);text-transform:uppercase}
 .pk b{display:block;font-size:16px;font-weight:800;color:var(--y)}
@@ -64,6 +73,7 @@ main{padding:0 8px calc(40px + env(safe-area-inset-bottom,0px));max-width:560px;
   <div class="tabs" id="tabs"><button data-t="all" class="on">All teams</button><button data-t="diff">We disagree</button></div>
   <div class="cols" id="cols"></div>
 </header>
+<div class="sorts" id="sorts"><button data-s="az">A–Z</button><button data-s="league">League</button><button data-s="wc">Wild Card</button><button data-s="div">Division</button><button data-s="close">Closest battles</button></div>
 <div class="upd" id="upd">Loading…</div>
 <div class="leg"><span><i style="background:var(--ok)"></i>Projected win</span><span><i style="background:var(--bad)"></i>Projected loss</span><span>% = chance pick hits</span></div>
 <main id="list"></main>
@@ -78,22 +88,62 @@ const proj=s=>s&&s.gp>0?(typeof s.proj==="number"?s.proj:s.pts/s.gp*84):null; //
 const res=(pick,line,p)=>(!pick||p==null||p===line)?"":(pick==="O")===(p>line)?"ok":"bad";
 const prob=(pick,po)=>po==null||!pick?null:(pick==="O"?po:1-po);   // chance this pick hits
 const resP=(pick,line,p,po)=>{const q=prob(pick,po);return q==null?res(pick,line,p):q>0.5?"ok":q<0.5?"bad":""};
-let tab="all",P=null,S=null;
+let tab="all",sortKey="az",P=null,S=null;
+try{sortKey=localStorage.getItem("sortKey")||"az"}catch(e){}
+if(!["az","league","wc","div","close"].includes(sortKey))sortKey="az";
+// Divisions and conferences (2026-27). The wild-card format matches the NHL's: top 3 in each division
+// plus the 2 best of the rest in each conference make the playoffs.
+const DIVS=[["Atlantic","East",["BOS","BUF","DET","FLA","MTL","OTT","TBL","TOR"]],["Metropolitan","East",["CAR","CBJ","NJD","NYI","NYR","PHI","PIT","WSH"]],["Central","West",["CHI","COL","DAL","MIN","NSH","STL","UTA","WPG"]],["Pacific","West",["ANA","CGY","EDM","LAK","SJS","SEA","VAN","VGK"]]];
+// NHL ranking: points, then fewer games played, regulation wins, regulation+OT wins, wins, goal difference, goals for
+const gd=s=>(s.gf??0)-(s.ga??0);
+const cmp=(a,b)=>{const x=(S.teams||{})[a]||{},y=(S.teams||{})[b]||{};
+  return (y.pts||0)-(x.pts||0)||(x.gp||0)-(y.gp||0)||(y.rw||0)-(x.rw||0)||(y.row||0)-(x.row||0)||(y.w||0)-(x.w||0)||gd(y)-gd(x)||(y.gf||0)-(x.gf||0)||a.localeCompare(b)};
 function btn(pick,line,r,side,q){return`<div class="pk ${side} ${r}${pick?"":" none"}"><i>${lab(pick)}</i><b>${pick?line:"–"}</b>${q==null?"":`<small>${Math.round(q*100)}%</small>`}</div>`}
 function render(){
   if(!P)return;
-  const c=[0,0],n=[0,0],ex=[0,0],names=P.names||["Me","Ben"];let diff=0,html="";
+  const c=[0,0],n=[0,0],names=P.names||["Me","Ben"];let diff=0;const D={};
   T.forEach(([k,name])=>{
     const t=P.teams[k]||{},st=(S.teams||{})[k]||{},p=proj(st),po=st.p_over;
     const ra=resP(t.a,t.line,p,po),rb=resP(t.b,t.line,p,po),qa=prob(t.a,po),qb=prob(t.b,po);
-    if(qa!=null)ex[0]+=qa;if(qb!=null)ex[1]+=qb;
     if(ra){n[0]++;if(ra==="ok")c[0]++}
     if(rb){n[1]++;if(rb==="ok")c[1]++}
-    const differs=t.a&&t.b&&t.a!==t.b;if(differs)diff++;
-    if(tab==="diff"&&!differs)return;
-    html+=`<div class="row">${btn(t.a,t.line,ra,"L",qa)}<div class="mid"><span class="bd">${k}<img src="https://assets.nhle.com/logos/nhl/svg/${k}_light.svg" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"></span><b>${esc(name)}</b><div class="ln"><span>Pre-season line<u>${t.line??"–"}</u></span><i></i><span>Current projection<u>${p==null?"–":Math.round(p)}</u></span></div></div>${btn(t.b,t.line,rb,"R",qb)}</div>`;
+    const differs=!!(t.a&&t.b&&t.a!==t.b);if(differs)diff++;
+    D[k]={k,name,t,st,p,po,ra,rb,qa,qb,differs};
   });
+  const show=k=>tab!=="diff"||D[k].differs;
+  const card=(k,tag,sub)=>{const d=D[k];
+    return`<div class="row">${btn(d.t.a,d.t.line,d.ra,"L",d.qa)}<div class="mid"><span class="bd">${k}<img src="https://assets.nhle.com/logos/nhl/svg/${k}_light.svg" alt="" onload="this.parentNode.classList.add('has')" onerror="this.remove()"></span><b>${tag?`<span class="rk">${esc(tag)}</span>`:""}${esc(d.name)}</b>${sub?`<div class="st">${esc(sub)}</div>`:""}<div class="ln"><span>Pre-season line<u>${d.t.line??"–"}</u></span><i></i><span>Current projection<u>${d.p==null?"–":Math.round(d.p)}</u></span></div></div>${btn(d.t.b,d.t.line,d.rb,"R",d.qb)}</div>`};
+  // items are [team, tag, sub-line, cutLineAfter]
+  const grp=(title,items)=>{
+    const rows=items.filter(i=>show(i[0])).map(i=>card(i[0],i[1],i[2])+(i[3]&&tab==="all"?'<div class="cut"><span>Playoff cut line</span></div>':"")).join("");
+    return rows?`<div class="grp">${title?`<div class="gh">${esc(title)}</div>`:""}${rows}</div>`:"";
+  };
+  const keys=T.map(x=>x[0]),stand=k=>`${D[k].st.pts??"–"} PTS · ${D[k].st.gp??"–"} GP`;
+  let html="";
+  if(sortKey==="league"){
+    html=grp("League standings",keys.slice().sort(cmp).map((k,i)=>[k,"#"+(i+1),stand(k)]));
+  }else if(sortKey==="div"){
+    html=DIVS.map(([dn,,ts])=>grp(dn+" Division",ts.slice().sort(cmp).map((k,i)=>[k,String(i+1),stand(k)]))).join("");
+  }else if(sortKey==="wc"){
+    html=["East","West"].map(conf=>{
+      const divs=DIVS.filter(d=>d[1]===conf),top=new Set(),cn=conf==="East"?"Eastern":"Western";
+      const parts=divs.map(([dn,,ts])=>{const s=ts.slice().sort(cmp).slice(0,3);s.forEach(k=>top.add(k));
+        return grp(cn+" Conference · "+dn,s.map((k,i)=>[k,dn[0]+(i+1),stand(k)]))});
+      const rest=divs.flatMap(d=>d[2]).filter(k=>!top.has(k)).sort(cmp),wc2=D[rest[1]].st.pts||0;
+      parts.push(grp(cn+" Conference · Wild Card",rest.map((k,i)=>[k,i<2?"WC"+(i+1):(wc2-(D[k].st.pts||0))+" back",stand(k),i===1])));
+      return parts.join("");
+    }).join("");
+  }else if(sortKey==="close"){
+    // gap between the two sides' chances; a split pick is just distance from 50/50 (56% vs 44% = 12-point gap)
+    const toss=k=>{const d=D[k];if(typeof d.po==="number")return Math.abs(d.po-0.5)*200;return d.p==null||d.t.line==null?999:Math.abs(d.p-d.t.line)*5};
+    const A=[],B=[];keys.forEach(k=>(D[k].differs&&toss(k)>0?A:B).push(k));
+    const by=(x,y)=>toss(x)-toss(y)||D[x].name.localeCompare(D[y].name);A.sort(by);B.sort(by);
+    html=grp("Split picks · closest first",A.map(k=>[k,Math.round(toss(k))+" pt gap"]))+grp("Same pick · no effect on who wins",B.map(k=>[k,D[k].differs?"even":"same pick"]));
+  }else{
+    html=grp("",keys.map(k=>[k]));
+  }
   $("list").innerHTML=html||'<div class="empty">Nothing here yet</div>';
+  [...$("sorts").children].forEach(b=>b.classList.toggle("on",b.dataset.s===sortKey));
   const any=n[0]+n[1]>0,lead=c[0]>c[1]?0:c[1]>c[0]?1:-1;
   $("sb").innerHTML=`<div class="sc r${any&&lead===0?" w":""}">${any&&lead===0?'<span class="tag">LEADING</span>':""}<div class="nm">${esc(names[0])}</div><b>${c[0]}</b><small>projected correct of ${n[0]}</small></div><div class="vs">VS</div><div class="sc bn${any&&lead===1?" w":""}">${any&&lead===1?'<span class="tag">LEADING</span>':""}<div class="nm">${esc(names[1])}</div><b>${c[1]}</b><small>projected correct of ${n[1]}</small></div>`;
   $("cols").innerHTML=`<div class="l">${esc(names[0])}<small>PICKS</small></div><div class="m">TEAM</div><div class="r">${esc(names[1])}<small>PICKS</small></div>`;
@@ -101,6 +151,11 @@ function render(){
   $("live").hidden=!S.isLive;
   $("upd").textContent=S.updated?"Standings as of "+S.updated+" · "+(S.sims?"projection = "+S.sims.toLocaleString()+" simulated seasons (form, pre-season line, schedule, injuries)":S.method==="model"?"projection = current form + pre-season line + remaining schedule":"projection = points ÷ games played × 84")+"":"Waiting for first standings update";
 }
+$("sorts").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  sortKey=b.dataset.s;try{localStorage.setItem("sortKey",sortKey)}catch(x){}
+  render();
+});
 $("tabs").addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
   tab=b.dataset.t;[...$("tabs").children].forEach(x=>x.classList.toggle("on",x===b));render();
@@ -110,7 +165,7 @@ $("tabs").addEventListener("click",e=>{
 async function live(){
   const j=await get("https://api-web.nhle.com/v1/standings/now");
   const teams={};
-  j.standings.forEach(t=>{teams[t.teamAbbrev.default]={gp:t.gamesPlayed,pts:t.points}});
+  j.standings.forEach(t=>{teams[t.teamAbbrev.default]={gp:t.gamesPlayed,pts:t.points,w:t.wins,l:t.losses,otl:t.otLosses,rw:t.regulationWins,row:t.regulationPlusOtWins,gf:t.goalFor,ga:t.goalAgainst}});
   if(Object.keys(teams).length!==32)throw 0;
   return{teams,updated:new Date().toLocaleString([],{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"}),isLive:true};
 }

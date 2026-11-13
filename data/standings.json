@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12",
+ "updated": "2026-11-13",
  "method": "model",
  "sims": 10000,
  "xg": true,
@@ -10,7 +10,7 @@
     "pos": "C",
     "status": "injured reserve",
     "return": "2026-12-06",
-    "games_out": 11,
+    "games_out": 10,
     "impact": 0.012
    },
    {
@@ -42,19 +42,11 @@
   ],
   "BUF": [
    {
-    "player": "Alex Lyon",
-    "pos": "G",
-    "status": "injured reserve",
-    "return": "2026-11-14",
-    "games_out": 1,
-    "impact": 0.04
-   },
-   {
     "player": "Konsta Helenius",
     "pos": "C",
-    "status": "out",
-    "return": "2026-11-17",
-    "games_out": 2,
+    "status": "injured reserve",
+    "return": "2026-11-19",
+    "games_out": 3,
     "impact": 0.012
    },
    {
@@ -102,14 +94,6 @@
   ],
   "CAR": [
    {
-    "player": "William Carrier",
-    "pos": "LW",
-    "status": "day-to-day",
-    "return": "2026-11-12",
-    "games_out": 3,
-    "impact": 0.015
-   },
-   {
     "player": "Jordan Staal",
     "pos": "C",
     "status": "injured reserve",
@@ -119,14 +103,6 @@
    }
   ],
   "CHI": [
-   {
-    "player": "Patrick Kane",
-    "pos": "RW",
-    "status": "injured reserve",
-    "return": "2026-11-14",
-    "games_out": 1,
-    "impact": 0.05
-   },
    {
     "player": "Bowen Byram",
     "pos": "D",
@@ -138,11 +114,27 @@
   ],
   "COL": [
    {
+    "player": "Cale Makar",
+    "pos": "D",
+    "status": "day-to-day",
+    "return": "2026-11-12",
+    "games_out": 3,
+    "impact": 0.025
+   },
+   {
+    "player": "Nathan MacKinnon",
+    "pos": "C",
+    "status": "day-to-day",
+    "return": "2026-11-14",
+    "games_out": 3,
+    "impact": 0.025
+   },
+   {
     "player": "Josh Manson",
     "pos": "D",
     "status": "injured reserve",
     "return": "2026-12-27",
-    "games_out": 20,
+    "games_out": 19,
     "impact": 0.012
    },
    {
@@ -150,11 +142,19 @@
     "pos": "LW",
     "status": "injured reserve",
     "return": "2026-11-27",
-    "games_out": 7,
+    "games_out": 6,
     "impact": 0.012
    }
   ],
   "DAL": [
+   {
+    "player": "Lian Bichsel",
+    "pos": "D",
+    "status": "out",
+    "return": "2026-11-17",
+    "games_out": 2,
+    "impact": 0.012
+   },
    {
     "player": "Miro Heiskanen",
     "pos": "D",
@@ -168,7 +168,7 @@
     "pos": "D",
     "status": "injured reserve",
     "return": "2026-11-27",
-    "games_out": 7,
+    "games_out": 6,
     "impact": 0.012
    },
    {
@@ -178,14 +178,6 @@
     "return": "2026-11-17",
     "games_out": 2,
     "impact": 0.012
-   },
-   {
-    "player": "Matt Duchene",
-    "pos": "C",
-    "status": "injured reserve",
-    "return": "2027-01-12",
-    "games_out": 27,
-    "impact": 0.025
    },
    {
     "player": "Luke Krys",
@@ -201,8 +193,8 @@
     "player": "Albert Johansson",
     "pos": "D",
     "status": "injured reserve",
-    "return": "2026-11-12",
-    "games_out": 3,
+    "return": "2026-11-14",
+    "games_out": 1,
     "impact": 0.012
    },
    {
@@ -252,7 +244,7 @@
     "pos": "G",
     "status": "injured reserve",
     "return": "2027-01-09",
-    "games_out": 26,
+    "games_out": 25,
     "impact": 0.04
    },
    {
@@ -266,14 +258,6 @@
   ],
   "FLA": [
    {
-    "player": "Sandis Vilmanis",
-    "pos": "LW",
-    "status": "out",
-    "return": "2026-11-14",
-    "games_out": 1,
-    "impact": 0.03
-   },
-   {
     "player": "Brad Marchand",
     "pos": "LW",
     "status": "injured reserve",
@@ -286,7 +270,7 @@
     "pos": "C",
     "status": "injured reserve",
     "return": "2026-11-27",
-    "games_out": 7,
+    "games_out": 6,
     "impact": 0.012
    },
    {
@@ -300,28 +284,12 @@
   ],
   "LAK": [
    {
-    "player": "Drew Doughty",
-    "pos": "D",
-    "status": "day-to-day",
-    "return": "2026-11-12",
-    "games_out": 3,
-    "impact": 0.015
-   },
-   {
     "player": "Erik Gustafsson",
     "pos": "D",
-    "status": "day-to-day",
-    "return": "2026-11-12",
-    "games_out": 3,
-    "impact": 0.015
-   },
-   {
-    "player": "Kevin Fiala",
-    "pos": "LW",
-    "status": "injured reserve",
+    "status": "out",
     "return": "2026-11-14",
     "games_out": 1,
-    "impact": 0.025
+    "impact": 0.03
    },
    {
     "player": "Jakub Dvorak",
@@ -333,6 +301,14 @@
    }
   ],
   "MIN": [
+   {
+    "player": "Joel Eriksson Ek",
+    "pos": "C",
+    "status": "day-to-day",
+    "return": "2026-11-14",
+    "games_out": 3,
+    "impact": 0.015
+   },
    {
     "player": "Brock Faber",
     "pos": "D",
@@ -352,10 +328,10 @@
   ],
   "MTL": [
    {
-    "player": "Mike Matheson",
-    "pos": "D",
+    "player": "Chris Kreider",
+    "pos": "LW",
     "status": "day-to-day",
-    "return": "2026-11-12",
+    "return": "2026-11-14",
     "games_out": 3,
     "impact": 0.015
    },
@@ -371,8 +347,8 @@
     "player": "Sam Montembeault",
     "pos": "G",
     "status": "injured reserve",
-    "return": "2026-11-12",
-    "games_out": 3,
+    "return": "2026-11-14",
+    "games_out": 1,
     "impact": 0.04
    },
    {
@@ -380,7 +356,7 @@
     "pos": "D",
     "status": "injured reserve",
     "return": "2026-11-30",
-    "games_out": 8,
+    "games_out": 7,
     "impact": 0.025
    },
    {
@@ -388,7 +364,7 @@
     "pos": "LW",
     "status": "injured reserve",
     "return": "2026-11-30",
-    "games_out": 8,
+    "games_out": 7,
     "impact": 0.025
    }
   ],
@@ -396,13 +372,29 @@
    {
     "player": "Jonathan Marchessault",
     "pos": "RW",
-    "status": "out",
+    "status": "day-to-day",
     "return": "2026-11-13",
-    "games_out": 1,
-    "impact": 0.012
+    "games_out": 3,
+    "impact": 0.006
    }
   ],
   "NJD": [
+   {
+    "player": "Johnathan Kovacevic",
+    "pos": "D",
+    "status": "out",
+    "return": "2026-11-18",
+    "games_out": 2,
+    "impact": 0.012
+   },
+   {
+    "player": "Brett Pesce",
+    "pos": "D",
+    "status": "out",
+    "return": "2026-11-14",
+    "games_out": 1,
+    "impact": 0.012
+   },
    {
     "player": "Anthony Mantha",
     "pos": "RW",
@@ -410,14 +402,6 @@
     "return": "2026-12-05",
     "games_out": 10,
     "impact": 0.03
-   },
-   {
-    "player": "Johnathan Kovacevic",
-    "pos": "D",
-    "status": "day-to-day",
-    "return": "2026-11-12",
-    "games_out": 3,
-    "impact": 0.006
    },
    {
     "player": "Seamus Casey",
@@ -430,9 +414,9 @@
   ],
   "NYI": [
    {
-    "player": "Matias Maccelli",
-    "pos": "LW",
-    "status": "injured reserve",
+    "player": "Jean-Gabriel Pageau",
+    "pos": "C",
+    "status": "out",
     "return": "2026-11-14",
     "games_out": 1,
     "impact": 0.03
@@ -444,14 +428,6 @@
     "return": "2026-11-14",
     "games_out": 1,
     "impact": 0.025
-   },
-   {
-    "player": "Ryan Pulock",
-    "pos": "D",
-    "status": "out",
-    "return": "2026-11-28",
-    "games_out": 7,
-    "impact": 0.012
    },
    {
     "player": "Calum Ritchie",
@@ -466,7 +442,7 @@
     "pos": "D",
     "status": "injured reserve",
     "return": "2027-04-08",
-    "games_out": 65,
+    "games_out": 64,
     "impact": 0.012
    }
   ],
@@ -484,7 +460,7 @@
     "pos": "D",
     "status": "injured reserve",
     "return": "2026-11-16",
-    "games_out": 2,
+    "games_out": 1,
     "impact": 0.012
    },
    {
@@ -500,7 +476,7 @@
     "pos": "C",
     "status": "injured reserve",
     "return": "2027-01-03",
-    "games_out": 23,
+    "games_out": 22,
     "impact": 0.025
    },
    {
@@ -508,7 +484,7 @@
     "pos": "C",
     "status": "injured reserve",
     "return": "2026-11-13",
-    "games_out": 1,
+    "games_out": 3,
     "impact": 0.025
    },
    {
@@ -516,7 +492,7 @@
     "pos": "LW",
     "status": "injured reserve",
     "return": "2027-01-25",
-    "games_out": 33,
+    "games_out": 32,
     "impact": 0.025
    }
   ],
@@ -530,19 +506,11 @@
     "impact": 0.012
    },
    {
-    "player": "Linus Ullmark",
-    "pos": "G",
-    "status": "day-to-day",
-    "return": "2026-11-12",
-    "games_out": 3,
-    "impact": 0.035
-   },
-   {
     "player": "Andre Burakovsky",
     "pos": "LW",
     "status": "injured reserve",
     "return": "2026-11-27",
-    "games_out": 7,
+    "games_out": 6,
     "impact": 0.012
    },
    {
@@ -550,7 +518,7 @@
     "pos": "LW",
     "status": "injured reserve",
     "return": "2026-11-25",
-    "games_out": 6,
+    "games_out": 5,
     "impact": 0.012
    },
    {
@@ -558,7 +526,7 @@
     "pos": "LW",
     "status": "injured reserve",
     "return": "2027-01-05",
-    "games_out": 24,
+    "games_out": 23,
     "impact": 0.012
    }
   ],
@@ -576,7 +544,7 @@
     "pos": "RW",
     "status": "injured reserve",
     "return": "2027-02-13",
-    "games_out": 41,
+    "games_out": 40,
     "impact": 0.025
    }
   ],
@@ -642,6 +610,14 @@
   ],
   "SEA": [
    {
+    "player": "Jacob Melanson",
+    "pos": "RW",
+    "status": "injured reserve",
+    "return": "2026-11-19",
+    "games_out": 3,
+    "impact": 0.012
+   },
+   {
     "player": "Nikke Kokko",
     "pos": "G",
     "status": "injured reserve",
@@ -653,8 +629,8 @@
     "player": "Curtis Douglas",
     "pos": "C",
     "status": "injured reserve",
-    "return": "2026-11-12",
-    "games_out": 3,
+    "return": "2026-11-14",
+    "games_out": 1,
     "impact": 0.012
    },
    {
@@ -664,14 +640,6 @@
     "return": "2027-01-02",
     "games_out": 22,
     "impact": 0.03
-   },
-   {
-    "player": "Jacob Melanson",
-    "pos": "RW",
-    "status": "injured reserve",
-    "return": "2026-12-01",
-    "games_out": 8,
-    "impact": 0.012
    },
    {
     "player": "Ryan Lindgren",
@@ -685,8 +653,8 @@
     "player": "Jake O'Brien",
     "pos": "C",
     "status": "injured reserve",
-    "return": "2026-11-12",
-    "games_out": 3,
+    "return": "2026-11-28",
+    "games_out": 7,
     "impact": 0.025
    }
   ],
@@ -696,7 +664,7 @@
     "pos": "D",
     "status": "injured reserve",
     "return": "2027-07-01",
-    "games_out": 66,
+    "games_out": 65,
     "impact": 0.025
    },
    {
@@ -704,19 +672,27 @@
     "pos": "C",
     "status": "injured reserve",
     "return": "2026-12-04",
-    "games_out": 10,
+    "games_out": 9,
     "impact": 0.012
    },
    {
     "player": "Tyler Tucker",
     "pos": "D",
     "status": "injured reserve",
-    "return": "2026-11-12",
-    "games_out": 3,
+    "return": "2026-11-17",
+    "games_out": 2,
     "impact": 0.025
    }
   ],
   "TBL": [
+   {
+    "player": "Anthony Cirelli",
+    "pos": "C",
+    "status": "out",
+    "return": "2026-11-14",
+    "games_out": 1,
+    "impact": 0.03
+   },
    {
     "player": "Erik Cernak",
     "pos": "D",
@@ -730,33 +706,25 @@
     "pos": "C",
     "status": "injured reserve",
     "return": "2026-12-02",
-    "games_out": 9,
+    "games_out": 8,
     "impact": 0.03
    }
   ],
   "TOR": [
    {
-    "player": "Zack MacEwen",
-    "pos": "C",
-    "status": "day-to-day",
-    "return": "2026-11-12",
-    "games_out": 3,
-    "impact": 0.006
-   },
-   {
     "player": "Morgan Rielly",
     "pos": "D",
-    "status": "day-to-day",
-    "return": "2026-11-12",
-    "games_out": 3,
-    "impact": 0.015
+    "status": "out",
+    "return": "2026-11-14",
+    "games_out": 1,
+    "impact": 0.03
    },
    {
     "player": "Colton Sissons",
     "pos": "C",
-    "status": "out",
-    "return": "2026-11-17",
-    "games_out": 2,
+    "status": "injured reserve",
+    "return": "2026-11-19",
+    "games_out": 3,
     "impact": 0.012
    },
    {
@@ -764,7 +732,7 @@
     "pos": "RW",
     "status": "injured reserve",
     "return": "2026-11-23",
-    "games_out": 5,
+    "games_out": 4,
     "impact": 0.03
    },
    {
@@ -772,7 +740,7 @@
     "pos": "LW",
     "status": "injured reserve",
     "return": "2026-11-30",
-    "games_out": 8,
+    "games_out": 7,
     "impact": 0.025
    },
    {
@@ -780,7 +748,7 @@
     "pos": "D",
     "status": "injured reserve",
     "return": "2026-11-23",
-    "games_out": 5,
+    "games_out": 4,
     "impact": 0.012
    },
    {
@@ -788,7 +756,7 @@
     "pos": "D",
     "status": "injured reserve",
     "return": "2026-11-23",
-    "games_out": 5,
+    "games_out": 4,
     "impact": 0.012
    },
    {
@@ -796,7 +764,7 @@
     "pos": "C",
     "status": "injured reserve",
     "return": "2027-01-30",
-    "games_out": 35,
+    "games_out": 34,
     "impact": 0.025
    },
    {
@@ -804,7 +772,7 @@
     "pos": "D",
     "status": "injured reserve",
     "return": "2026-11-27",
-    "games_out": 7,
+    "games_out": 6,
     "impact": 0.025
    },
    {
@@ -812,7 +780,7 @@
     "pos": "G",
     "status": "injured reserve",
     "return": "2027-03-30",
-    "games_out": 61,
+    "games_out": 60,
     "impact": 0.04
    },
    {
@@ -828,26 +796,26 @@
    {
     "player": "Nick Schmaltz",
     "pos": "C",
-    "status": "day-to-day",
-    "return": "2026-11-12",
-    "games_out": 3,
-    "impact": 0.025
-   },
-   {
-    "player": "Logan Cooley",
-    "pos": "C",
     "status": "out",
-    "return": "2026-11-12",
-    "games_out": 3,
+    "return": "2026-11-14",
+    "games_out": 1,
     "impact": 0.05
    },
    {
     "player": "Nate Schmidt",
     "pos": "D",
     "status": "injured reserve",
+    "return": "2026-11-21",
+    "games_out": 4,
+    "impact": 0.012
+   },
+   {
+    "player": "Logan Cooley",
+    "pos": "C",
+    "status": "out",
     "return": "2026-11-14",
     "games_out": 1,
-    "impact": 0.012
+    "impact": 0.05
    },
    {
     "player": "Dylan Guenther",
@@ -861,8 +829,8 @@
     "player": "John Marino",
     "pos": "D",
     "status": "injured reserve",
-    "return": "2026-11-21",
-    "games_out": 4,
+    "return": "2026-12-03",
+    "games_out": 9,
     "impact": 0.03
    },
    {
@@ -888,7 +856,7 @@
     "pos": "C",
     "status": "injured reserve",
     "return": "2026-11-13",
-    "games_out": 1,
+    "games_out": 3,
     "impact": 0.012
    },
    {
@@ -924,7 +892,7 @@
     "pos": "D",
     "status": "injured reserve",
     "return": "2026-11-25",
-    "games_out": 6,
+    "games_out": 5,
     "impact": 0.025
    },
    {
@@ -946,11 +914,19 @@
   ],
   "WPG": [
    {
+    "player": "Dylan DeMelo",
+    "pos": "D",
+    "status": "out",
+    "return": "2026-11-19",
+    "games_out": 3,
+    "impact": 0.03
+   },
+   {
     "player": "Elias Salomonsson",
     "pos": "D",
     "status": "injured reserve",
     "return": "2026-11-30",
-    "games_out": 8,
+    "games_out": 7,
     "impact": 0.012
    },
    {
@@ -972,6 +948,38 @@
   ]
  },
  "teams": {
+  "CAR": {
+   "gp": 20,
+   "pts": 32,
+   "w": 15,
+   "l": 3,
+   "otl": 2,
+   "rw": 14,
+   "row": 15,
+   "gf": 82,
+   "ga": 46,
+   "proj": 123.3,
+   "pace": 134.4,
+   "p_over": 0.957,
+   "src": "sim",
+   "form": "xg"
+  },
+  "MIN": {
+   "gp": 21,
+   "pts": 32,
+   "w": 14,
+   "l": 3,
+   "otl": 4,
+   "rw": 13,
+   "row": 14,
+   "gf": 70,
+   "ga": 46,
+   "proj": 117.8,
+   "pace": 128.0,
+   "p_over": 0.961,
+   "src": "sim",
+   "form": "xg"
+  },
   "EDM": {
    "gp": 20,
    "pts": 31,
@@ -982,41 +990,41 @@
    "row": 13,
    "gf": 81,
    "ga": 58,
-   "proj": 113.4,
+   "proj": 113.6,
    "pace": 130.2,
-   "p_over": 0.841,
+   "p_over": 0.843,
    "src": "sim",
    "form": "xg"
   },
-  "CAR": {
+  "TBL": {
    "gp": 19,
-   "pts": 30,
-   "w": 14,
-   "l": 3,
+   "pts": 28,
+   "w": 13,
+   "l": 4,
    "otl": 2,
-   "rw": 13,
-   "row": 14,
-   "gf": 78,
-   "ga": 45,
-   "proj": 121.8,
-   "pace": 132.6,
-   "p_over": 0.932,
+   "rw": 11,
+   "row": 13,
+   "gf": 74,
+   "ga": 57,
+   "proj": 112.5,
+   "pace": 123.8,
+   "p_over": 0.843,
    "src": "sim",
    "form": "xg"
   },
-  "MIN": {
-   "gp": 20,
-   "pts": 30,
-   "w": 13,
+  "MTL": {
+   "gp": 19,
+   "pts": 28,
+   "w": 12,
    "l": 3,
    "otl": 4,
-   "rw": 12,
-   "row": 13,
-   "gf": 65,
-   "ga": 44,
-   "proj": 116.6,
-   "pace": 126.0,
-   "p_over": 0.945,
+   "rw": 8,
+   "row": 10,
+   "gf": 67,
+   "ga": 57,
+   "proj": 107.2,
+   "pace": 123.8,
+   "p_over": 0.796,
    "src": "sim",
    "form": "xg"
   },
@@ -1030,73 +1038,57 @@
    "row": 12,
    "gf": 69,
    "ga": 54,
-   "proj": 111.4,
+   "proj": 111.5,
    "pace": 117.6,
-   "p_over": 0.815,
-   "src": "sim",
-   "form": "xg"
-  },
-  "BOS": {
-   "gp": 18,
-   "pts": 27,
-   "w": 13,
-   "l": 4,
-   "otl": 1,
-   "rw": 10,
-   "row": 12,
-   "gf": 68,
-   "ga": 41,
-   "proj": 104.9,
-   "pace": 126.0,
-   "p_over": 0.969,
-   "src": "sim",
-   "form": "xg"
-  },
-  "TBL": {
-   "gp": 18,
-   "pts": 26,
-   "w": 12,
-   "l": 4,
-   "otl": 2,
-   "rw": 10,
-   "row": 12,
-   "gf": 71,
-   "ga": 56,
-   "proj": 111.0,
-   "pace": 121.3,
-   "p_over": 0.795,
-   "src": "sim",
-   "form": "xg"
-  },
-  "MTL": {
-   "gp": 18,
-   "pts": 26,
-   "w": 11,
-   "l": 3,
-   "otl": 4,
-   "rw": 7,
-   "row": 9,
-   "gf": 62,
-   "ga": 55,
-   "proj": 105.2,
-   "pace": 121.3,
-   "p_over": 0.732,
+   "p_over": 0.816,
    "src": "sim",
    "form": "xg"
   },
   "NJD": {
-   "gp": 19,
-   "pts": 26,
-   "w": 13,
+   "gp": 20,
+   "pts": 28,
+   "w": 14,
    "l": 6,
    "otl": 0,
-   "rw": 8,
+   "rw": 9,
+   "row": 13,
+   "gf": 73,
+   "ga": 57,
+   "proj": 109.1,
+   "pace": 117.6,
+   "p_over": 0.922,
+   "src": "sim",
+   "form": "xg"
+  },
+  "BOS": {
+   "gp": 19,
+   "pts": 27,
+   "w": 13,
+   "l": 5,
+   "otl": 1,
+   "rw": 10,
    "row": 12,
-   "gf": 68,
-   "ga": 55,
-   "proj": 107.5,
-   "pace": 114.9,
-   "p_over": 0.884,
+   "gf": 70,
+   "ga": 46,
+   "proj": 102.6,
+   "pace": 119.4,
+   "p_over": 0.951,
+   "src": "sim",
+   "form": "xg"
+  },
+  "OTT": {
+   "gp": 20,
+   "pts": 26,
+   "w": 12,
+   "l": 6,
+   "otl": 2,
+   "rw": 9,
+   "row": 10,
+   "gf": 64,
+   "ga": 60,
+   "proj": 100.6,
+   "pace": 109.2,
+   "p_over": 0.754,
    "src": "sim",
    "form": "xg"
   },
@@ -1110,41 +1102,41 @@
    "row": 9,
    "gf": 59,
    "ga": 53,
-   "proj": 99.5,
+   "proj": 99.4,
    "pace": 110.5,
-   "p_over": 0.935,
+   "p_over": 0.932,
    "src": "sim",
    "form": "xg"
   },
   "COL": {
-   "gp": 19,
-   "pts": 24,
+   "gp": 20,
+   "pts": 25,
    "w": 11,
    "l": 6,
-   "otl": 2,
+   "otl": 3,
    "rw": 11,
    "row": 11,
-   "gf": 78,
-   "ga": 59,
-   "proj": 108.8,
-   "pace": 106.1,
-   "p_over": 0.562,
+   "gf": 81,
+   "ga": 63,
+   "proj": 108.2,
+   "pace": 105.0,
+   "p_over": 0.538,
    "src": "sim",
    "form": "xg"
   },
-  "OTT": {
-   "gp": 19,
+  "FLA": {
+   "gp": 20,
    "pts": 24,
    "w": 11,
-   "l": 6,
+   "l": 7,
    "otl": 2,
    "rw": 9,
-   "row": 9,
-   "gf": 60,
-   "ga": 57,
-   "proj": 98.9,
-   "pace": 106.1,
-   "p_over": 0.689,
+   "row": 11,
+   "gf": 65,
+   "ga": 60,
+   "proj": 103.4,
+   "pace": 100.8,
+   "p_over": 0.328,
    "src": "sim",
    "form": "xg"
   },
@@ -1158,41 +1150,41 @@
    "row": 11,
    "gf": 59,
    "ga": 56,
-   "proj": 92.3,
+   "proj": 92.0,
    "pace": 96.6,
-   "p_over": 0.664,
+   "p_over": 0.65,
    "src": "sim",
    "form": "xg"
   },
   "DAL": {
-   "gp": 17,
+   "gp": 18,
    "pts": 22,
    "w": 10,
-   "l": 5,
+   "l": 6,
    "otl": 2,
    "rw": 7,
    "row": 9,
-   "gf": 49,
-   "ga": 41,
-   "proj": 104.0,
-   "pace": 108.7,
-   "p_over": 0.651,
+   "gf": 52,
+   "ga": 49,
+   "proj": 101.3,
+   "pace": 102.7,
+   "p_over": 0.538,
    "src": "sim",
    "form": "xg"
   },
-  "FLA": {
-   "gp": 19,
+  "UTA": {
+   "gp": 20,
    "pts": 22,
    "w": 10,
-   "l": 7,
+   "l": 8,
    "otl": 2,
    "rw": 8,
    "row": 10,
-   "gf": 60,
-   "ga": 56,
-   "proj": 102.4,
-   "pace": 97.3,
-   "p_over": 0.292,
+   "gf": 66,
+   "ga": 69,
+   "proj": 95.8,
+   "pace": 92.4,
+   "p_over": 0.47,
    "src": "sim",
    "form": "xg"
   },
@@ -1206,137 +1198,121 @@
    "row": 10,
    "gf": 71,
    "ga": 70,
-   "proj": 94.1,
+   "proj": 94.4,
    "pace": 92.8,
-   "p_over": 0.445,
-   "src": "sim",
-   "form": "xg"
-  },
-  "UTA": {
-   "gp": 19,
-   "pts": 21,
-   "w": 10,
-   "l": 8,
-   "otl": 1,
-   "rw": 8,
-   "row": 10,
-   "gf": 66,
-   "ga": 68,
-   "proj": 96.3,
-   "pace": 92.8,
-   "p_over": 0.488,
-   "src": "sim",
-   "form": "xg"
-  },
-  "WSH": {
-   "gp": 16,
-   "pts": 20,
-   "w": 10,
-   "l": 6,
-   "otl": 0,
-   "rw": 8,
-   "row": 10,
-   "gf": 56,
-   "ga": 53,
-   "proj": 101.6,
-   "pace": 105.0,
-   "p_over": 0.546,
-   "src": "sim",
-   "form": "xg"
-  },
-  "SEA": {
-   "gp": 16,
-   "pts": 19,
-   "w": 9,
-   "l": 6,
-   "otl": 1,
-   "rw": 6,
-   "row": 7,
-   "gf": 57,
-   "ga": 57,
-   "proj": 86.7,
-   "pace": 99.8,
-   "p_over": 0.734,
-   "src": "sim",
-   "form": "xg"
-  },
-  "BUF": {
-   "gp": 18,
-   "pts": 19,
-   "w": 8,
-   "l": 7,
-   "otl": 3,
-   "rw": 6,
-   "row": 8,
-   "gf": 53,
-   "ga": 65,
-   "proj": 90.9,
-   "pace": 88.7,
-   "p_over": 0.317,
+   "p_over": 0.453,
    "src": "sim",
    "form": "xg"
   },
   "WPG": {
-   "gp": 19,
-   "pts": 19,
-   "w": 8,
+   "gp": 20,
+   "pts": 21,
+   "w": 9,
    "l": 8,
    "otl": 3,
-   "rw": 7,
-   "row": 8,
-   "gf": 53,
-   "ga": 65,
-   "proj": 85.7,
-   "pace": 84.0,
-   "p_over": 0.515,
+   "rw": 8,
+   "row": 9,
+   "gf": 61,
+   "ga": 68,
+   "proj": 88.4,
+   "pace": 88.2,
+   "p_over": 0.627,
+   "src": "sim",
+   "form": "xg"
+  },
+  "WSH": {
+   "gp": 17,
+   "pts": 20,
+   "w": 10,
+   "l": 7,
+   "otl": 0,
+   "rw": 8,
+   "row": 10,
+   "gf": 58,
+   "ga": 58,
+   "proj": 99.2,
+   "pace": 98.8,
+   "p_over": 0.445,
    "src": "sim",
    "form": "xg"
   },
   "NYI": {
-   "gp": 17,
-   "pts": 18,
-   "w": 7,
+   "gp": 18,
+   "pts": 20,
+   "w": 8,
    "l": 6,
    "otl": 4,
-   "rw": 5,
-   "row": 6,
-   "gf": 49,
-   "ga": 52,
-   "proj": 85.7,
-   "pace": 88.9,
-   "p_over": 0.428,
+   "rw": 6,
+   "row": 7,
+   "gf": 54,
+   "ga": 54,
+   "proj": 87.8,
+   "pace": 93.3,
+   "p_over": 0.511,
    "src": "sim",
    "form": "xg"
   },
   "STL": {
-   "gp": 18,
-   "pts": 18,
-   "w": 8,
+   "gp": 19,
+   "pts": 20,
+   "w": 9,
    "l": 8,
    "otl": 2,
    "rw": 8,
    "row": 8,
-   "gf": 53,
+   "gf": 54,
    "ga": 55,
-   "proj": 85.5,
-   "pace": 84.0,
-   "p_over": 0.495,
+   "proj": 87.4,
+   "pace": 88.4,
+   "p_over": 0.586,
+   "src": "sim",
+   "form": "xg"
+  },
+  "BUF": {
+   "gp": 19,
+   "pts": 20,
+   "w": 8,
+   "l": 7,
+   "otl": 4,
+   "rw": 6,
+   "row": 8,
+   "gf": 55,
+   "ga": 68,
+   "proj": 90.6,
+   "pace": 88.4,
+   "p_over": 0.299,
+   "src": "sim",
+   "form": "xg"
+  },
+  "SEA": {
+   "gp": 17,
+   "pts": 19,
+   "w": 9,
+   "l": 7,
+   "otl": 1,
+   "rw": 6,
+   "row": 7,
+   "gf": 58,
+   "ga": 61,
+   "proj": 84.4,
+   "pace": 93.9,
+   "p_over": 0.651,
    "src": "sim",
    "form": "xg"
   },
   "TOR": {
-   "gp": 20,
+   "gp": 21,
    "pts": 18,
    "w": 8,
-   "l": 10,
+   "l": 11,
    "otl": 2,
    "rw": 7,
    "row": 8,
-   "gf": 67,
-   "ga": 70,
-   "proj": 80.5,
-   "pace": 75.6,
-   "p_over": 0.049,
+   "gf": 69,
+   "ga": 75,
+   "proj": 78.5,
+   "pace": 72.0,
+   "p_over": 0.03,
    "src": "sim",
    "form": "xg"
   },
@@ -1350,9 +1326,9 @@
    "row": 6,
    "gf": 53,
    "ga": 74,
-   "proj": 81.0,
+   "proj": 81.1,
    "pace": 72.0,
-   "p_over": 0.069,
+   "p_over": 0.072,
    "src": "sim",
    "form": "xg"
   },
@@ -1366,25 +1342,25 @@
    "row": 8,
    "gf": 47,
    "ga": 66,
-   "proj": 75.7,
+   "proj": 75.9,
    "pace": 75.2,
    "p_over": 0.427,
    "src": "sim",
    "form": "xg"
   },
   "DET": {
-   "gp": 19,
+   "gp": 20,
    "pts": 17,
    "w": 7,
-   "l": 9,
+   "l": 10,
    "otl": 3,
    "rw": 5,
    "row": 5,
-   "gf": 51,
-   "ga": 59,
-   "proj": 82.1,
-   "pace": 75.2,
-   "p_over": 0.28,
+   "gf": 55,
+   "ga": 64,
+   "proj": 80.8,
+   "pace": 71.4,
+   "p_over": 0.238,
    "src": "sim",
    "form": "xg"
   },
@@ -1398,9 +1374,9 @@
    "row": 5,
    "gf": 61,
    "ga": 67,
-   "proj": 82.4,
+   "proj": 82.6,
    "pace": 70.7,
-   "p_over": 0.194,
+   "p_over": 0.2,
    "src": "sim",
    "form": "xg"
   },
@@ -1414,57 +1390,57 @@
    "row": 5,
    "gf": 47,
    "ga": 69,
-   "proj": 76.8,
+   "proj": 77.1,
    "pace": 64.0,
-   "p_over": 0.043,
+   "p_over": 0.046,
    "src": "sim",
    "form": "xg"
   },
   "CBJ": {
-   "gp": 16,
+   "gp": 17,
    "pts": 14,
    "w": 7,
-   "l": 9,
+   "l": 10,
    "otl": 0,
    "rw": 2,
    "row": 5,
-   "gf": 41,
-   "ga": 51,
-   "proj": 83.5,
-   "pace": 73.5,
-   "p_over": 0.18,
+   "gf": 42,
+   "ga": 54,
+   "proj": 81.7,
+   "pace": 69.2,
+   "p_over": 0.13,
    "src": "sim",
    "form": "xg"
   },
   "LAK": {
-   "gp": 16,
+   "gp": 17,
    "pts": 12,
    "w": 5,
-   "l": 9,
+   "l": 10,
    "otl": 2,
    "rw": 3,
    "row": 5,
-   "gf": 45,
-   "ga": 55,
-   "proj": 85.9,
-   "pace": 63.0,
-   "p_over": 0.159,
+   "gf": 47,
+   "ga": 60,
+   "proj": 84.1,
+   "pace": 59.3,
+   "p_over": 0.116,
    "src": "sim",
    "form": "xg"
   },
   "CHI": {
-   "gp": 18,
-   "pts": 9,
-   "w": 4,
+   "gp": 19,
+   "pts": 11,
+   "w": 5,
    "l": 13,
    "otl": 1,
    "rw": 3,
-   "row": 4,
-   "gf": 39,
-   "ga": 76,
-   "proj": 63.2,
-   "pace": 42.0,
-   "p_over": 0.042,
+   "row": 5,
+   "gf": 42,
+   "ga": 78,
+   "proj": 65.7,
+   "pace": 48.6,
+   "p_over": 0.068,
    "src": "sim",
    "form": "xg"
   },
